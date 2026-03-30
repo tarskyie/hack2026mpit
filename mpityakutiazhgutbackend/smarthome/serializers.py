@@ -8,7 +8,6 @@ class RoomSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ApplianceCategorySerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
     class Meta:
         model = ApplianceCategory
         fields = '__all__'

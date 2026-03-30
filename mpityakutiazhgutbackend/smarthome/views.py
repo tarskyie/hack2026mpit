@@ -6,27 +6,19 @@ from .serializers import ApplianceSerializer, ApplianceCategorySerializer, RoomS
 from django.utils import timezone
 import datetime
 from rest_framework.permissions import IsAuthenticated
-
+from .permissions import IsSuperUserOrReadOnly
 class RoomViewSet(viewsets.ModelViewSet):
     serializer_class = RoomSerializer
     permission_classes = [IsAuthenticated]
-
     def get_queryset(self):
         return Room.objects.filter(user=self.request.user)
-
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-
 class ApplianceCategoryViewSet(viewsets.ModelViewSet):
     serializer_class = ApplianceCategorySerializer
-    permission_classes = [IsAuthenticated]
-
+    permission_classes = [IsSuperUserOrReadOnly]
     def get_queryset(self):
-        return ApplianceCategory.objects.filter(user=self.request.user)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
+        return ApplianceCategory.objects.all()
 class ApplianceViewSet(viewsets.ModelViewSet):
     serializer_class = ApplianceSerializer
     permission_classes = [IsAuthenticated]

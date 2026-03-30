@@ -12,11 +12,7 @@ class Room(models.Model):
         return self.name
 
 class ApplianceCategory(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
-
-    class Meta:
-        unique_together = ('user', 'name')
+    name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
