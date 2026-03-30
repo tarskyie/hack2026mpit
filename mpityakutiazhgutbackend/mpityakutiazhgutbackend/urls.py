@@ -22,4 +22,5 @@ urlpatterns = [
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),  # If using JWT
     path('news/', include('news.urls')),
+    path('smarthome/', include('smarthome.urls')),
 ]
