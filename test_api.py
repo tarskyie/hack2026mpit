@@ -191,3 +191,10 @@ else:
     exit()
 
 print('All tests passed!')
+
+# 14. Set appliance active
+set_active_url = f'{appliance_url}{appliance_details["id"]}/set_status/'
+print(set_active_url    )
+status_data = {'status': 'active'}
+response = requests.post(set_active_url, data=status_data, headers=headers)
+print(response.json())
