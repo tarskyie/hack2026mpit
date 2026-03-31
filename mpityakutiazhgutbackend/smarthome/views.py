@@ -1,12 +1,54 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from .models import Appliance, ApplianceCategory, Room, AirConditioner
 from .serializers import ApplianceSerializer, ApplianceCategorySerializer, RoomSerializer, AirConditionerSerializer
 from django.utils import timezone
 import datetime
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsSuperUserOrReadOnly
+
+last_home_access = None
+
+class HomeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        global last_home_access
+        last_home_access = timezone.now()
+
+        rooms = Room.objects.filter(user=request.user)
+        data = []
+        for room in rooms:
+            room_data = {
+                'id': room.id,
+                'name': room.name,
+                'appliances': []
+            }
+            appliances = Appliance.objects.filter(room=room)
+            for appliance in appliances:
+                appliance_data = {
+                    'id': appliance.id,
+                    'name': appliance.name,
+                    'status': appliance.status,
+                    'category': appliance.category.name,
+                    'active_until': appliance.active_until
+                }
+                if hasattr(appliance, 'airconditioner'):
+                    appliance_data['temperature'] = appliance.airconditioner.temperature
+                room_data['appliances'].append(appliance_data)
+            data.append(room_data)
+        return Response(data)
+
+class HomeIsOnlineView(APIView):
+    def get(self, request):
+        global last_home_access
+        if last_home_access and (timezone.now() - last_home_access) < datetime.timedelta(seconds=10):
+            return Response("online")
+        else:
+            return Response("offline")
+
 class RoomViewSet(viewsets.ModelViewSet):
     serializer_class = RoomSerializer
     permission_classes = [IsAuthenticated]

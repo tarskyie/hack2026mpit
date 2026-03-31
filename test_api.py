@@ -4,6 +4,7 @@ import json
 import uuid
 import random
 import string
+import time
 
 
 # Generate random username and password
@@ -138,7 +139,7 @@ if response.status_code != 201:
 
 ac = response.json()
 print(f'Successfully created air conditioner: {ac["name"]}')
-print(ac)   
+print(ac)
 
 
 # 9. Set AC Temperature
@@ -156,3 +157,37 @@ if ac_details['temperature'] == 25.5:
 else:
     print(f'Failed to set AC temperature, it is {ac_details["temperature"]}.')
 
+# 10. Test /smarthome/home/
+home_url = 'http://127.0.0.1:8000/smarthome/home/'
+response = requests.get(home_url, headers=headers)
+
+if response.status_code != 200:
+    print(f'Failed to get home data: {response.text}')
+    exit()
+
+print(f'Successfully got home data: {response.json()}')
+
+# 11. Test /smarthome/home_is_online/ (should be online)
+online_url = 'http://127.0.0.1:8000/smarthome/home_is_online/'
+response = requests.get(online_url, headers=headers)
+
+if response.status_code == 200 and response.text == '"online"':
+    print('Home is online, as expected.')
+else:
+    print(f'Home is not online, but it should be. Response: {response.text}')
+    exit()
+
+# 12. Wait for 11 seconds
+print('Waiting for 11 seconds...')
+time.sleep(11)
+
+# 13. Test /smarthome/home_is_online/ again (should be offline)
+response = requests.get(online_url, headers=headers)
+
+if response.status_code == 200 and response.text == '"offline"':
+    print('Home is offline, as expected.')
+else:
+    print(f'Home is not offline, but it should be. Response: {response.text}')
+    exit()
+
+print('All tests passed!')
