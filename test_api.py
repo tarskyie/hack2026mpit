@@ -1,10 +1,34 @@
 
 import requests
 import json
+import uuid
+import random
+import string
 
-# Replace with your actual username and password
-username = 'superuser'
-password = 'superuser'
+
+# Generate random username and password
+def generate_random_password(length=16):
+    characters = string.ascii_letters + string.digits + string.punctuation
+    password = ''.join(random.choice(characters) for i in range(length))
+    return password
+
+username = f'testuser_{uuid.uuid4().hex[:8]}'
+password = generate_random_password()
+
+# 0. Create the user
+user_creation_url = 'http://127.0.0.1:8000/auth/users/'
+user_data = {'username': username, 'password': password, 're_password': password}
+response = requests.post(user_creation_url, data=user_data)
+
+if response.status_code == 201:
+    print(f"User '{username}' created successfully.")
+elif response.status_code == 400 and 'username' in response.text:
+    print(f"User '{username}' already exists (this should not happen with random usernames).")
+    # Exit or handle as appropriate for your testing
+    exit()
+else:
+    print(f'Failed to create user: {response.text}')
+    exit()
 
 # 1. Authenticate and get token
 auth_url = 'http://127.0.0.1:8000/auth/jwt/create/'
@@ -42,21 +66,21 @@ if response.status_code == 400 and 'unique' in response.text:
     category = next((c for c in response.json() if c['name'] == 'Lighting'), None)
     if not category:
         print(f'Failed to get appliance category: {response.text}')
-        exit()
+        #exit()
 else:
     if response.status_code != 201:
         print(f'Failed to create appliance category: {response.text}')
-        exit()
+        #exit()
     category = response.json()
 
-print(f'Using appliance category: {category["name"]}')
+#print(f'Using appliance category: {category["name"]}')
 
 
 # 4. Create an Appliance
 appliance_url = 'http://127.0.0.1:8000/smarthome/appliances/'
 appliance_data = {
     'name': 'Living Room Lamp',
-    'category': category['id'],
+    'category': 1,
     'room': room['id']
 }
 response = requests.post(appliance_url, data=appliance_data, headers=headers)
@@ -79,4 +103,56 @@ if appliance_details['room'] == room['id']:
     print(f'Successfully assigned appliance {appliance["name"]} to room {room["name"]}.')
 else:
     print(f'Failed to assign appliance to room.')
+
+
+# 6. Create 'Air Conditioner' appliance category
+ac_category_data = {'name': 'Air Conditioner'}
+response = requests.post(category_url, data=ac_category_data, headers=headers)
+
+if response.status_code == 400 and 'unique' in response.text:
+    response = requests.get(category_url, headers=headers)
+    ac_category = next((c for c in response.json() if c['name'] == 'Air Conditioner'), None)
+    if not ac_category:
+        print(f'Failed to get appliance category: {response.text}')
+        #exit()
+else:
+    if response.status_code != 201:
+        print(f'Failed to create appliance category: {response.text}')
+        #exit()
+    ac_category = response.json()
+
+#print(f'Using appliance category: {ac_category["name"]}')
+
+# 7. Create an Air Conditioner
+ac_url = 'http://127.0.0.1:8000/smarthome/air-conditioners/'
+ac_data = {
+    'name': 'Living Room AC',
+    'category': 2,
+    'room': room['id']
+}
+response = requests.post(ac_url, data=ac_data, headers=headers)
+
+if response.status_code != 201:
+    print(f'Failed to create air conditioner: {response.text}')
+    exit()
+
+ac = response.json()
+print(f'Successfully created air conditioner: {ac["name"]}')
+print(ac)   
+
+
+# 9. Set AC Temperature
+set_temp_url = f'{ac_url}{ac["id"]}/set_temperature/'
+temp_data = {'temperature': 25.5}
+response = requests.post(set_temp_url, data=temp_data, headers=headers)
+
+if response.status_code != 200:
+    print(f'Failed to set AC temperature: {response.text}')
+    exit()
+
+ac_details = response.json()
+if ac_details['temperature'] == 25.5:
+    print(f'Successfully set AC temperature to {ac_details["temperature"]}.')
+else:
+    print(f'Failed to set AC temperature, it is {ac_details["temperature"]}.')
 
