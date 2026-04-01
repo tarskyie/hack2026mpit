@@ -198,3 +198,8 @@ print(set_active_url    )
 status_data = {'status': 'active'}
 response = requests.post(set_active_url, data=status_data, headers=headers)
 print(response.json())
+
+# 15. Destroy appliance
+destroy_url = f'{appliance_url}{appliance_details["id"]}/'
+response = requests.delete(destroy_url, headers=headers)
+print(response)

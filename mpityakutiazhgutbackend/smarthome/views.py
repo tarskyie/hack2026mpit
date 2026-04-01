@@ -56,6 +56,9 @@ class RoomViewSet(viewsets.ModelViewSet):
         return Room.objects.filter(user=self.request.user)
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+    def perform_destroy(self, instance):
+        instance.delete()
+
 class ApplianceCategoryViewSet(viewsets.ModelViewSet):
     serializer_class = ApplianceCategorySerializer
     permission_classes = [IsSuperUserOrReadOnly]
@@ -70,6 +73,9 @@ class ApplianceViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+    
+    def perform_destroy(self, instance):
+        instance.delete()
 
     @action(detail=True, methods=['post'])
     def set_status(self, request, pk=None):
