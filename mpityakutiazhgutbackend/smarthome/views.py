@@ -44,7 +44,7 @@ class HomeView(APIView):
 class HomeIsOnlineView(APIView):
     def get(self, request):
         global last_home_access
-        if last_home_access and (timezone.now() - last_home_access) < datetime.timedelta(seconds=10):
+        if last_home_access and (timezone.now() - last_home_access) < datetime.timedelta(seconds=5):
             return Response("online")
         else:
             return Response("offline")

@@ -156,6 +156,7 @@ if ac_details['temperature'] == 25.5:
     print(f'Successfully set AC temperature to {ac_details["temperature"]}.')
 else:
     print(f'Failed to set AC temperature, it is {ac_details["temperature"]}.')
+    exit()
 
 # 10. Test /smarthome/home/
 home_url = 'http://127.0.0.1:8000/smarthome/home/'
@@ -190,8 +191,6 @@ else:
     print(f'Home is not offline, but it should be. Response: {response.text}')
     exit()
 
-print('All tests passed!')
-
 # 14. Set appliance active
 set_active_url = f'{appliance_url}{appliance_details["id"]}/set_status/'
 print(set_active_url    )
@@ -203,3 +202,5 @@ print(response.json())
 destroy_url = f'{appliance_url}{appliance_details["id"]}/'
 response = requests.delete(destroy_url, headers=headers)
 print(response)
+
+print('All tests passed!')
