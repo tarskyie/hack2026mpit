@@ -14,13 +14,6 @@ This project is a Django-based backend for a smart home control application. It 
 *   Set air conditioner temperature
 *   User-specific configurations: each user can only see and manage their own smart home configuration.
 
-## Project Structure
-
-The project consists of two main Django apps:
-
-*   `news`: A simple news app.
-*   `smarthome`: The core app for the smart home functionality.
-
 ## Getting Started
 
 ### Prerequisites
@@ -33,21 +26,21 @@ The project consists of two main Django apps:
 
 1.  **Clone the repository:**
 
-    ```bash
+    ```PowerShell
     git clone <repository-url>
     cd <repository-directory>
     ```
 
 2.  **Create and activate a virtual environment:**
 
-    ```bash
+    ```PowerShell
     python -m venv venv
-    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+    .\venv\Scripts\Activate.ps1
     ```
 
 3.  **Install the dependencies:**
 
-    ```bash
+    ```PowerShell
     pip install -r requirements.txt
     ```
 
@@ -57,13 +50,13 @@ The project consists of two main Django apps:
 
 5.  **Apply the database migrations:**
 
-    ```bash
+    ```PowerShell
     python manage.py migrate
     ```
 
 6.  **Run the development server:**
 
-    ```bash
+    ```PowerShell
     python manage.py runserver
     ```
 
@@ -123,6 +116,6 @@ All endpoints are prefixed with `/smarthome/`.
 
 To run the tests, use the following command:
 
-```bash
+```PowerShell
 python manage.py test
 ```

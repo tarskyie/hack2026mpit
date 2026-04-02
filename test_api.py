@@ -179,8 +179,8 @@ else:
     exit()
 
 # 12. Wait for 11 seconds
-print('Waiting for 11 seconds...')
-time.sleep(11)
+print('Waiting for 6 seconds...')
+time.sleep(6)
 
 # 13. Test /smarthome/home_is_online/ again (should be offline)
 response = requests.get(online_url, headers=headers)
