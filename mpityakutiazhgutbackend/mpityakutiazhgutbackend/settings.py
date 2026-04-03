@@ -156,5 +156,6 @@ STATIC_URL = 'static/'
 
 CORS_ALLOWED_ORIGINS = [
     "https://localhost:7181",
+    "https://ivantarsky-project.vercel.app",
 ]
 
